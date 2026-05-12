@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-title">
+        Admin Panel
+    </div>
+
+    <table>
+
+        <tr>
+            <th>Username</th>
+            <th>Service</th>
+            <th>Queue Number</th>
+            <th>Status</th>
+        </tr>
+
+        {% for user in users %}
+
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <td>{{ user[2] }}</td>
+            <td>{{ user[3] }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+{% endblock %}

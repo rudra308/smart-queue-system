@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-title">Select a Service</div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          {% if "already in queue" in message %}
+            <div class="alert" style="text-align: center; background: #fee2e2; color: #991b1b; border-left-color: #ef4444;">
+                <p><strong>{{ message }}</strong></p>
+                <br>
+                <a href="/cancel_queue" class="btn-danger">Cancel Current & Join New One</a>
+                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #fecaca;">
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <div class="grid">
+            <label class="service-item">
+                <input type="radio" name="service" value="canteen" style="display:none;" required>
+                <div class="service-icon">🍽️</div>
+                <div class="service-name">Canteen</div>
+            </label>
+
+            <label class="service-item">
+                <input type="radio" name="service" value="clinic" style="display:none;">
+                <div class="service-icon">🏥</div>
+                <div class="service-name">Clinic</div>
+            </label>
+
+            <label class="service-item">
+                <input type="radio" name="service" value="office" style="display:none;">
+                <div class="service-icon">🏢</div>
+                <div class="service-name">Office</div>
+            </label>
+        </div>
+        <br>
+        <button type="submit" class="btn-success">Join Queue</button>
+    </form>
+</div>
+{% endblock %}
