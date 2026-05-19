@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, redirect, session, flash
 import sqlite3
 
+
 app = Flask(__name__)
+current_number = 0
+service_categories = ["General", "Payment", "Registration"]
 app.secret_key = "secret123"
 
 # DATABASE CONNECTION
@@ -264,12 +267,41 @@ def status():
 
 # ================= ADMIN =================
 
-@app.route('/admin')
+@app.route('/admin', methods=['GET', 'POST'])
 def admin():
 
     conn = db()
     c = conn.cursor()
 
+    # UPDATE CURRENT NUMBER
+    if request.method == 'POST':
+
+        action = request.form.get('action')
+
+        # next number
+        if action == 'next':
+
+            service = request.form.get('service')
+
+            c.execute("""
+                UPDATE current
+                SET current_number = current_number + 1
+                WHERE service=?
+            """, (service,))
+
+        # reset queue
+        elif action == 'reset':
+
+            c.execute("DELETE FROM queue")
+
+            c.execute("""
+                UPDATE current
+                SET current_number = 1
+            """)
+
+        conn.commit()
+
+    # get users
     c.execute("""
         SELECT username, service, number, status
         FROM queue
@@ -277,9 +309,21 @@ def admin():
 
     users = c.fetchall()
 
+    # get current numbers
+    c.execute("""
+        SELECT service, current_number
+        FROM current
+    """)
+
+    current_numbers = c.fetchall()
+
     conn.close()
 
-    return render_template('admin.html', users=users)
+    return render_template(
+        'admin.html',
+        users=users,
+        current_numbers=current_numbers
+    )
 
 # ================= LOGOUT =================
 

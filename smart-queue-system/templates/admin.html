@@ -1,35 +1,92 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+</head>
+<body>
 
-{% block content %}
+<h1>ADMIN PANEL</h1>
 
-<div class="card">
+<hr>
 
-    <div class="card-title">
-        Admin Panel
-    </div>
+<h2>Current Numbers</h2>
 
-    <table>
+{% for item in current_numbers %}
 
-        <tr>
-            <th>Username</th>
-            <th>Service</th>
-            <th>Queue Number</th>
-            <th>Status</th>
-        </tr>
+<p>
+{{ item[0] }} :
+<b>{{ item[1] }}</b>
+</p>
 
-        {% for user in users %}
+<form method="POST">
 
-        <tr>
-            <td>{{ user[0] }}</td>
-            <td>{{ user[1] }}</td>
-            <td>{{ user[2] }}</td>
-            <td>{{ user[3] }}</td>
-        </tr>
+    <input
+        type="hidden"
+        name="action"
+        value="next"
+    >
 
-        {% endfor %}
+    <input
+        type="hidden"
+        name="service"
+        value="{{ item[0] }}"
+    >
 
-    </table>
+    <button type="submit">
+        Next Number
+    </button>
 
-</div>
+</form>
 
-{% endblock %}
+<hr>
+
+{% endfor %}
+
+<h2>Reset Queue</h2>
+
+<form method="POST">
+
+    <input
+        type="hidden"
+        name="action"
+        value="reset"
+    >
+
+    <button type="submit">
+        Reset Everything
+    </button>
+
+</form>
+
+<hr>
+
+<h2>All Queue Users</h2>
+
+<table border="1">
+
+<tr>
+    <th>Username</th>
+    <th>Service</th>
+    <th>Queue Number</th>
+    <th>Status</th>
+</tr>
+
+{% for user in users %}
+
+<tr>
+    <td>{{ user[0] }}</td>
+    <td>{{ user[1] }}</td>
+    <td>{{ user[2] }}</td>
+    <td>{{ user[3] }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/home">Back Home</a>
+
+</body>
+</html>

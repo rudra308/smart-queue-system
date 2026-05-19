@@ -1,46 +1,49 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="card">
+<div class="card services-page-card">
     <div class="card-title">Select a Service</div>
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-          {% if "already in queue" in message %}
-            <div class="alert" style="text-align: center; background: #fee2e2; color: #991b1b; border-left-color: #ef4444;">
-                <p><strong>{{ message }}</strong></p>
-                <br>
-                <a href="/cancel_queue" class="btn-danger">Cancel Current & Join New One</a>
-                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #fecaca;">
-            </div>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-
-    <form method="POST">
-        <div class="grid">
-            <label class="service-item">
-                <input type="radio" name="service" value="canteen" style="display:none;" required>
-                <div class="service-icon">🍽️</div>
-                <div class="service-name">Canteen</div>
-            </label>
-
-            <label class="service-item">
-                <input type="radio" name="service" value="clinic" style="display:none;">
-                <div class="service-icon">🏥</div>
-                <div class="service-name">Clinic</div>
-            </label>
-
-            <label class="service-item">
-                <input type="radio" name="service" value="office" style="display:none;">
-                <div class="service-icon">🏢</div>
-                <div class="service-name">Office</div>
-            </label>
-        </div>
+    {% if already_in_queue %}
+    <div class="alert">
+        <p><strong>You are already holding a spot in an active queue!</strong></p>
         <br>
-        <button type="submit" class="btn-success">Join Queue</button>
+        <a href="/cancel_queue" class="btn-danger">Cancel Current Spot & Join New One</a>
+    </div>
+    {% endif %}
+
+    <form method="POST" class="centered-queue-form" {% if already_in_queue %}style="opacity: 0.5; pointer-events: none;"{% endif %}>
+        <div class="large-services-grid">
+            
+            <label class="large-service-box">
+                <input type="radio" name="service" value="canteen" required>
+                <div class="box-content">
+                    <span class="large-icon">☕</span>
+                    <span class="large-name">Starbees</span>
+                </div>
+            </label>
+
+            <label class="large-service-box">
+                <input type="radio" name="service" value="clinic">
+                <div class="box-content">
+                    <span class="large-icon">🍲</span>
+                    <span class="large-name">Haji Tapah Cafe</span>
+                </div>
+            </label>
+
+            <label class="large-service-box">
+                <input type="radio" name="service" value="office">
+                <div class="box-content">
+                    <span class="large-icon">🏢</span>
+                    <span class="large-name">Office</span>
+                </div>
+            </label>
+
+        </div>
+
+        <button type="submit" class="btn-success large-submit-btn" {% if already_in_queue %}disabled{% endif %}>
+            Confirm & Join Queue
+        </button>
     </form>
 </div>
 {% endblock %}
