@@ -1,49 +1,65 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="card services-page-card">
-    <div class="card-title">Select a Service</div>
 
-    {% if already_in_queue %}
-    <div class="alert">
-        <p><strong>You are already holding a spot in an active queue!</strong></p>
-        <br>
-        <a href="/cancel_queue" class="btn-danger">Cancel Current Spot & Join New One</a>
-    </div>
-    {% endif %}
+<div style="max-width:900px; margin:auto; padding:20px;">
 
-    <form method="POST" class="centered-queue-form" {% if already_in_queue %}style="opacity: 0.5; pointer-events: none;"{% endif %}>
-        <div class="large-services-grid">
-            
-            <label class="large-service-box">
-                <input type="radio" name="service" value="canteen" required>
-                <div class="box-content">
-                    <span class="large-icon">☕</span>
-                    <span class="large-name">Starbees</span>
+    <h2 style="text-align:center; margin-bottom:20px;">
+        🎫 Join a Queue
+    </h2>
+
+    <p style="text-align:center; color:#666;">
+        Select a service to join the queue system
+    </p>
+
+    <form method="POST">
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; margin-top:30px;">
+
+            <!-- CANTEEN -->
+            <label style="cursor:pointer;">
+                <input type="radio" name="service" value="canteen" required hidden>
+
+                <div class="card" style="padding:20px; text-align:center; border:2px solid #ddd; border-radius:12px; transition:0.3s;">
+                    🍔
+                    <h3>Canteen</h3>
+                    <p>Food & Drinks Queue</p>
                 </div>
             </label>
 
-            <label class="large-service-box">
-                <input type="radio" name="service" value="clinic">
-                <div class="box-content">
-                    <span class="large-icon">🍲</span>
-                    <span class="large-name">Haji Tapah Cafe</span>
+            <!-- CLINIC -->
+            <label style="cursor:pointer;">
+                <input type="radio" name="service" value="clinic" hidden>
+
+                <div class="card" style="padding:20px; text-align:center; border:2px solid #ddd; border-radius:12px; transition:0.3s;">
+                    🏥
+                    <h3>Clinic</h3>
+                    <p>Medical Services Queue</p>
                 </div>
             </label>
 
-            <label class="large-service-box">
-                <input type="radio" name="service" value="office">
-                <div class="box-content">
-                    <span class="large-icon">🏢</span>
-                    <span class="large-name">Office</span>
+            <!-- OFFICE -->
+            <label style="cursor:pointer;">
+                <input type="radio" name="service" value="office" hidden>
+
+                <div class="card" style="padding:20px; text-align:center; border:2px solid #ddd; border-radius:12px; transition:0.3s;">
+                    🏢
+                    <h3>Office</h3>
+                    <p>Admin Services Queue</p>
                 </div>
             </label>
 
         </div>
 
-        <button type="submit" class="btn-success large-submit-btn" {% if already_in_queue %}disabled{% endif %}>
-            Confirm & Join Queue
-        </button>
+        <div style="text-align:center; margin-top:30px;">
+            <button type="submit"
+                style="padding:12px 25px; border:none; background:#28a745; color:white; font-size:16px; border-radius:8px; cursor:pointer;">
+                Join Queue
+            </button>
+        </div>
+
     </form>
+
 </div>
+
 {% endblock %}

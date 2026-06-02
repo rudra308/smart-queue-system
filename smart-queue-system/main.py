@@ -3,24 +3,46 @@ import sqlite3
 
 
 app = Flask(__name__)
-current_number = 0
-service_categories = ["General", "Payment", "Registration"]
+
 app.secret_key = "secret123"
 
 # DATABASE CONNECTION
 def db():
     return sqlite3.connect("queue.db")
+# DATABASE CONNECTION
+def db():
+    return sqlite3.connect("queue.db")
+
+
+@app.route('/check_users')
+def check_users():
+    conn = db()
+    c = conn.cursor()
+
+    c.execute("SELECT username, role FROM users")
+    users = c.fetchall()
+
+    conn.close()
+
+    return str(users)
+
+
+@app.route('/whoami')
+def whoami():
+    return str(session)
 
 # CREATE TABLES
 def init():
     conn = db()
+    
     c = conn.cursor()
 
     c.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT,
-        password TEXT
+        username TEXT UNIQUE,
+        password TEXT,
+        role TEXT DEFAULT 'user'
     )
     """)
 
@@ -52,12 +74,17 @@ def init():
                 (service, 1)
             )
 
+# Automatically create a master admin account if it doesn't exist yet
+    c.execute("SELECT * FROM users WHERE username='admin'")
+    if not c.fetchone():
+        c.execute(
+            "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+            ("admin", "admin", "admin")
+        )
     conn.commit()
     conn.close()
 
 init()
-
-# ================= AUTH =================
 
 @app.route('/', methods=['GET', 'POST'])
 def auth():
@@ -73,10 +100,18 @@ def auth():
 
         if action == 'register':
 
+            c.execute("SELECT * FROM users WHERE username=?", (username,))
+            existing = c.fetchone()
+
+            if existing:
+                flash("Username already exists. Please choose another one.")
+                conn.close()
+                return redirect('/')
+
             c.execute(
                 "INSERT INTO users (username, password) VALUES (?, ?)",
                 (username, password)
-            )
+             )
 
             flash("Registration successful!")
 
@@ -91,6 +126,7 @@ def auth():
 
             if not user:
                 flash("Invalid login details")
+                conn.close()
                 return redirect('/')
 
             flash("Login successful!")
@@ -99,6 +135,18 @@ def auth():
         conn.close()
 
         session['user'] = username
+
+        # 🔥 ADMIN CHECK (correct place)
+        conn = db()
+        c = conn.cursor()
+
+        c.execute("SELECT role FROM users WHERE username=?", (username,))
+        role = c.fetchone()[0]
+
+        conn.close()
+
+        if role == "admin":
+            return redirect('/secure-staff-portal')
 
         return redirect('/home')
 
@@ -265,23 +313,47 @@ def status():
         estimated_time=estimated_time
     )
 
-# ================= ADMIN =================
 
-@app.route('/admin', methods=['GET', 'POST'])
+# =================  ADMIN   =================
+# ============================================
+
+@app.route('/secure-staff-portal', methods=['GET', 'POST'])
 def admin():
+    # GATE 1: Check if the user is logged into the system at all
+    if 'user' not in session:
+        flash("Unauthorized access! Please log in.")
+        return redirect('/')
 
+    # GATE 2: Query the database to check this user's specific role
+    username = session['user']
     conn = db()
     c = conn.cursor()
+    
+    c.execute("SELECT role FROM users WHERE username=?", (username,))
+    user_role = c.fetchone()
+    
+    # If they are not an admin, kick them back to the home page immediately
+    if not user_role or user_role[0] != 'admin':
+        conn.close()
+        flash("Access Denied: You do not have admin privileges.")
+        return redirect('/home')
 
-    # UPDATE CURRENT NUMBER
+    # If they passed both gates, execute the admin layout processing logic
     if request.method == 'POST':
-
         action = request.form.get('action')
 
-        # next number
         if action == 'next':
-
             service = request.form.get('service')
+
+            c.execute("SELECT current_number FROM current WHERE service=?", (service,))
+            row = c.fetchone()
+            current_serving = row[0] if row else 1
+
+            c.execute("""
+                UPDATE queue 
+                SET status='served' 
+                WHERE service=? AND number=? AND status='waiting'
+            """, (service, current_serving))
 
             c.execute("""
                 UPDATE current
@@ -289,32 +361,16 @@ def admin():
                 WHERE service=?
             """, (service,))
 
-        # reset queue
         elif action == 'reset':
-
             c.execute("DELETE FROM queue")
-
-            c.execute("""
-                UPDATE current
-                SET current_number = 1
-            """)
+            c.execute("UPDATE current SET current_number = 1")
 
         conn.commit()
 
-    # get users
-    c.execute("""
-        SELECT username, service, number, status
-        FROM queue
-    """)
-
+    c.execute("SELECT username, service, number, status FROM queue")
     users = c.fetchall()
 
-    # get current numbers
-    c.execute("""
-        SELECT service, current_number
-        FROM current
-    """)
-
+    c.execute("SELECT service, current_number FROM current")
     current_numbers = c.fetchall()
 
     conn.close()
@@ -362,4 +418,8 @@ def cancel_queue():
 # ================= RUN =================
 
 if __name__ == '__main__':
+    print("Home: http://127.0.0.1:5000/")
+    print("Admin Panel: http://127.0.0.1:5000/secure-staff-portal")
+    print("==============================\n")
+
     app.run(debug=True)

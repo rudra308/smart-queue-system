@@ -2,15 +2,55 @@
 <html>
 <head>
     <title>Smart Queue System</title>
+
     <link rel="stylesheet" href="/static/css/styles.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+        }
+
+        header {
+            padding: 20px;
+            background: #3b82f6;
+            color: white;
+        }
+
+        header a {
+            color: white;
+            margin-right: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        .card {
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            border-color: #28a745;
+        }
+    </style>
+
 </head>
+
 <body>
 
-<header style="padding:20px; background:#3b82f6; color:white;">
+<header>
     <h2>Smart Queue System</h2>
-    <a href="/home">Home</a> |
-    <a href="/services">Join Queue</a> |
-    <a href="/status">My Status</a> |
+    <a href="/home">Home</a>
+    <a href="/services">Join Queue</a>
+    <a href="/status">My Status</a>
     <a href="/logout">Logout</a>
 </header>
 
