@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-title">
+        Queue Status
+    </div>
+
+    <div class="queue-status">
+        <div class="queue-number">YOUR NUMBER</div>
+        <div class="queue-big">{{ user_number }}</div>
+        <p><strong>Service:</strong> {{ service }}</p>
+        <p><strong>Now Serving:</strong> {{ current }}</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-label">People Ahead</div>
+            <div class="stat-value">{{ people_ahead }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Estimated Wait</div>
+            <div class="stat-value">{{ estimated_time }} min</div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+        <p style="color: #64748b; margin-bottom: 15px; font-size: 14px;">Need to switch services?</p>
+        <a href="/cancel_queue" class="btn-danger" 
+           onclick="return confirm('Are you sure you want to leave your current spot in line?')">
+            Cancel / Leave Queue
+        </a>
+    </div>
+</div>
+<style>
+.card:hover {
+    transform: none !important;
+    border-color: inherit !important;
+}
+</style>
+{% endblock %}

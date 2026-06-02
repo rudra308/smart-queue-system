@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f8fafc; color: #1e293b; }
+        h1, h2 { color: #0f172a; }
+        .grid-container { display: flex; gap: 20px; margin-bottom: 35px; flex-wrap: wrap; }
+        .admin-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; flex: 1; min-width: 250px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .btn-next { background-color: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-next:hover { background-color: #2563eb; }
+        .btn-reset { background-color: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-reset:hover { background-color: #dc2626; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #f1f5f9; color: #475569; }
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .waiting { background-color: #fef3c7; color: #d97706; }
+        .served { background-color: #d1fae5; color: #059669; }
+    </style>
+</head>
+<body>
+
+    <h1>Admin Control Panel</h1>
+    <a href="/home" style="color: #3b82f6; text-decoration: none; font-weight: 500;">← Back to Home Dashboard</a>
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+
+    <h2>Current Counter Numbers</h2>
+    <div class="grid-container">
+        {% for item in current_numbers %}
+        <div class="admin-card">
+            <h3 style="margin-top: 0; text-transform: capitalize;">
+                {% if item[0] == 'canteen' %}☕ Starbees
+                {% elif item[0] == 'clinic' %}🍲 Haji Tapah Cafe
+                {% else %}🏢 {{ item[0] | capitalize }}
+                {% endif %}
+            </h3>
+            <p style="font-size: 14px; color: #64748b; margin-bottom: 5px;">Now Serving Ticket:</p>
+            <div style="font-size: 32px; font-weight: bold; color: #3b82f6; margin-bottom: 15px;">#{{ item[1] }}</div>
+            
+            <!-- Form to advance counter line -->
+            <form method="POST">
+                <input type="hidden" name="action" value="next">
+                <input type="hidden" name="service" value="{{ item[0] }}">
+                <button type="submit" class="btn-next">Call Next Number</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2>System Controls</h2>
+    <div class="admin-card" style="border-left: 4px solid #ef4444;">
+        <h3>Reset System State</h3>
+        <p style="color: #64748b; font-size: 14px;">Warning: This action completely wipes out all ticket rows in the waiting system logs and resets counters to 1.</p>
+        <form method="POST" onsubmit="return confirm('Are you absolutely sure you want to clear the entire system queue history?');">
+            <input type="hidden" name="action" value="reset">
+            <button type="submit" class="btn-reset">Reset Everything</button>
+        </form>
+    </div>
+
+    <h2 style="margin-top: 40px;">All Queue History & Users</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Service Desk</th>
+                <th>Queue Ticket Number</th>
+                <th>Live Status</th>    
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td style="font-weight: 500;">{{ user[0] }}</td>
+                <td style="text-transform: capitalize;">{{ user[1] }}</td>
+                <td><strong>#{{ user[2] }}</strong></td>
+                <td>
+                    <span class="status-badge {% if user[3] == 'waiting' %}waiting{% else %}served{% endif %}">
+                        {{ user[3] | upper }}
+                    </span>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: #94a3b8; padding: 30px;">No queue records found in system database.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

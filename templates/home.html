@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Welcome to Smart Queue System</h1>
+<br>
+
+{% if stats %}
+<div class="card" style="border-left: 5px solid #10b981;">
+    <div class="card-title">⚠️ You are currently in a live line!</div>
+    <p><strong>Service:</strong> {{ stats.service }}</p>
+    <p><strong>Your Number:</strong> {{ stats.user_number }}</p>
+    <p><strong>People Ahead:</strong> {{ stats.people_ahead }}</p>
+    <br>
+    <a href="/status" class="btn-primary">View Live Tracking</a>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-title">You are not in any queue right now.</div>
+    <p>Need to get something done? Select an option below to secure your spot.</p>
+    <br>
+    <a href="/services" class="btn-success">Join a Queue Now</a>
+</div>
+{% endif %}
+
+<div class="service-container" style="display: flex; gap: 20px; margin-top: 30px;">
+    <div class="card" style="flex: 1;">
+        <h2>☕ Starbees Queue</h2>
+        <p>Skip the coffee lines. Order drinks remotely.</p>
+    </div>
+    <div class="card" style="flex: 1;">
+        <h2>🍲 Haji Tapah Cafe Queue</h2>
+        <p>Track your local food kitchen ticket numbers.</p>
+    </div>
+    <div class="card" style="flex: 1;">
+        <h2>🏢 Office Queue</h2>
+        <p>Get priority assistance for admin services.</p>
+    </div>
+</div>
+{% endblock %}
