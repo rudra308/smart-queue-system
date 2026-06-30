@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<section class="queue-display-page">
+
+    <div class="queue-header">
+        <div>
+            <h1 class="page-title">Live Queue Management System</h1>
+            <p class="page-subtitle">
+                Track your current queue number and estimated waiting time.
+            </p>
+        </div>
+
+        {% if user_number != "-" %}
+            <div class="system-status active">
+                <span class="status-dot"></span>
+                Active Queue
+            </div>
+        {% else %}
+            <div class="system-status inactive">
+                No Active Queue
+            </div>
+        {% endif %}
+    </div>
+
+    {% if user_number != "-" %}
+
+    <div class="queue-layout">
+
+        <!-- LEFT SIDE: MAIN QUEUE CARD -->
+        <section class="main-ticket-card">
+
+            <p class="now-serving-label">
+                Current Ticket Number Now Serving
+            </p>
+
+            <div class="massive-ticket-number">
+                #{{ current }}
+            </div>
+
+            <div class="ticket-info-grid">
+
+                <div class="ticket-info-box">
+                    <p>Please Go To</p>
+
+                    {% if service == 'canteen' %}
+                        <h2>Starbees</h2>
+                    {% elif service == 'clinic' %}
+                        <h2>Haji Tapah Cafe</h2>
+                    {% else %}
+                        <h2>Office</h2>
+                    {% endif %}
+                </div>
+
+                <div class="ticket-info-box green-box">
+                    <p>Estimated Wait</p>
+                    <h2>{{ estimated_time }} min</h2>
+                </div>
+
+            </div>
+
+            <div class="your-ticket-box">
+                <p>Your Ticket Number</p>
+                <h2>#{{ user_number }}</h2>
+
+                {% if created_at %}
+                    <span>Joined at {{ created_at }}</span>
+                {% endif %}
+            </div>
+
+            {% if people_ahead == 0 %}
+                <div class="friendly-alert alert-now">
+                    It is your turn now. Please proceed to the counter.
+                </div>
+            {% elif people_ahead <= 2 %}
+                <div class="friendly-alert alert-soon">
+                    Get ready. Only {{ people_ahead }} people ahead of you.
+                </div>
+            {% else %}
+                <div class="friendly-alert alert-normal">
+                    Please wait. There are {{ people_ahead }} people ahead of you.
+                </div>
+            {% endif %}
+
+            <form method="POST" action="/cancel_queue" onsubmit="return confirm('Are you sure you want to leave your current queue?');">
+                <button type="submit" class="large-danger-button">
+                    Cancel / Leave Queue
+                </button>
+            </form>
+
+        </section>
+
+        <!-- RIGHT SIDE: SIDEBAR -->
+        <aside class="next-list-card">
+
+            <h2>Next 3 Numbers in Line</h2>
+
+            <p class="sidebar-description">
+                These numbers are coming up soon.
+            </p>
+
+            <div class="next-number-list">
+
+                <div class="next-number-item primary-next">
+                    <div>
+                        <span>Next</span>
+                        <h3>#{{ current + 1 }}</h3>
+                    </div>
+                    <strong>Ready Soon</strong>
+                </div>
+
+                <div class="next-number-item">
+                    <div>
+                        <span>Second</span>
+                        <h3>#{{ current + 2 }}</h3>
+                    </div>
+                    <strong>Waiting</strong>
+                </div>
+
+                <div class="next-number-item">
+                    <div>
+                        <span>Third</span>
+                        <h3>#{{ current + 3 }}</h3>
+                    </div>
+                    <strong>Waiting</strong>
+                </div>
+
+            </div>
+
+            <div class="reminder-box">
+                <h3>Reminder</h3>
+                <p>
+                    When your number is displayed, please proceed to the correct service counter.
+                </p>
+            </div>
+
+        </aside>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-queue-card">
+        <div class="empty-icon">🎫</div>
+
+        <h2>You are not currently in any queue</h2>
+
+        <p>
+            Join a service queue to receive your number and estimated waiting time.
+        </p>
+
+        <a href="/dashboard" class="large-primary-button">
+            Take a Ticket Number
+        </a>
+    </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

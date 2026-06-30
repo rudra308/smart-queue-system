@@ -1,46 +1,133 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Admin Panel</title>
-</head>
+{% extends "layout.html" %}
 
-<body>
+{% block content %}
 
-<h1>Admin Panel</h1>
+<h1 class="page-title">Admin Dashboard</h1>
+<p class="page-subtitle">
+    Manage queue numbers, monitor waiting users, and review system activity.
+</p>
 
-<h2>Deans Cafe</h2>
+<h2>System Overview</h2>
 
-<ul>
-{% for q in queues["Deans Cafe"] %}
-<li>Queue {{ q[1] }} - {{ q[0] }}</li>
-{% endfor %}
-</ul>
+<div class="stats-grid">
+    <div class="stat-box">
+        <div class="stat-label">Total Waiting</div>
+        <div class="stat-value">{{ total_waiting }}</div>
+    </div>
 
-<hr>
+    <div class="stat-box">
+        <div class="stat-label">Total Served</div>
+        <div class="stat-value">{{ total_served }}</div>
+    </div>
 
-<h2>Haji Tapah</h2>
+    <div class="stat-box">
+        <div class="stat-label">Total Cancelled</div>
+        <div class="stat-value">{{ total_cancelled }}</div>
+    </div>
+</div>
 
-<ul>
-{% for q in queues["Haji Tapah"] %}
-<li>Queue {{ q[1] }} - {{ q[0] }}</li>
-{% endfor %}
-</ul>
+<h2>Waiting by Service</h2>
 
-<hr>
+<div class="stats-grid">
+    <div class="stat-box">
+        <div class="stat-label">Starbees Waiting</div>
+        <div class="stat-value">{{ canteen_waiting }}</div>
+    </div>
 
-<h2>Dapur Sahang</h2>
+    <div class="stat-box">
+        <div class="stat-label">Haji Tapah Cafe Waiting</div>
+        <div class="stat-value">{{ clinic_waiting }}</div>
+    </div>
 
-<ul>
-{% for q in queues["Dapur Sahang"] %}
-<li>Queue {{ q[1] }} - {{ q[0] }}</li>
-{% endfor %}
-</ul>
+    <div class="stat-box">
+        <div class="stat-label">Office Waiting</div>
+        <div class="stat-value">{{ office_waiting }}</div>
+    </div>
+</div>
 
-<br>
+<h2>Current Counter Numbers</h2>
 
-<a href="/dashboard">
-    <button>Back</button>
-</a>
+<div class="service-grid">
+    {% for item in current_numbers %}
+    <div class="card card-soft">
+        <h2>
+            {% if item[0] == 'Deans Cafe' %}
+                ☕ Starbees
+            {% elif item[0] == 'Haji Tapah' %}
+                🍲 Haji Tapah Cafe
+            {% else %}
+                🏢 Office
+            {% endif %}
+        </h2>
 
-</body>
-</html>
+        <p style="color:#64748b;">Now Serving Ticket</p>
+
+        <div class="queue-big">#{{ item[1] }}</div>
+
+        <form method="POST" onsubmit="return confirm('Are you sure you want to call the next number?');">
+            <input type="hidden" name="action" value="next">
+            <input type="hidden" name="service" value="{{ item[0] }}">
+
+            <button type="submit" class="btn-primary">
+                Call Next Number
+            </button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<h2>System Controls</h2>
+
+<div class="card" style="border-left:6px solid #dc2626;">
+    <h3>Reset System State</h3>
+
+    <p style="color:#64748b;">
+        Warning: this action clears all queue records and resets all counters back to 1.
+    </p>
+
+    <form method="POST" onsubmit="return confirm('Are you absolutely sure you want to reset the system?');">
+        <input type="hidden" name="action" value="reset">
+
+        <button type="submit" class="btn-danger">
+            Reset Everything
+        </button>
+    </form>
+</div>
+
+<h2>Recent Queue Records</h2>
+
+<div class="card table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Service</th>
+                <th>Queue Number</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user[0] }}</td>
+                <td>{{ user[1] }}</td>
+                <td><strong>#{{ user[2] }}</strong></td>
+                <td>
+                    <span class="status-badge {{ user[3] }}">
+                        {{ user[3] | upper }}
+                    </span>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align:center; color:#64748b;">
+                    No queue records found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

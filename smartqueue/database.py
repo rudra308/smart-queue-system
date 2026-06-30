@@ -5,10 +5,14 @@ def init_db():
     c = conn.cursor()
 
     c.execute("""
-    CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS queue (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE,
-        password TEXT
+        username TEXT,
+        location TEXT,
+        number INTEGER,
+        status TEXT DEFAULT 'waiting',
+        created_at TEXT,
+        served_at TEXT
     )
     """)
 

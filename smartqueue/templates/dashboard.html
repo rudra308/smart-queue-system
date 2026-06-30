@@ -34,6 +34,7 @@
         .queue-btn {
             display: inline-block; background: #667eea; color: white;
             padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;
+            border: none; cursor: pointer; font-size: 15px;
         }
         .queue-btn:hover { background: #5a71e0; }
     </style>
@@ -51,20 +52,59 @@
     <div class="options-grid">
         <div class="option-card">
             <h3>Deans Cafe</h3>
-            <a href="/take_number/Deans%20Cafe" class="queue-btn">Join Queue</a>
+            <button type="button" onclick="joinQueue('Deans Cafe')" class="queue-btn">Join Queue</button>
         </div>
 
         <div class="option-card">
             <h3>Haji Tapah</h3>
-            <a href="/take_number/Haji%20Tapah" class="queue-btn">Join Queue</a>
+            <button type="button" onclick="joinQueue('Haji Tapah')" class="queue-btn">Join Queue</button>
         </div>
 
         <div class="option-card">
             <h3>Dapur Sahang</h3>
-            <a href="/take_number/Dapur%20Sahang" class="queue-btn">Join Queue</a>
+            <button type="button" onclick="joinQueue('Dapur Sahang')" class="queue-btn">Join Queue</button>
         </div>
     </div>
 </div>
+
+<script>
+function joinQueue(location) {
+    if (!navigator.geolocation) {
+        alert("Your browser does not support GPS location.");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            fetch("/take_number", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    location: location,
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                })
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.open();
+                document.write(html);
+                document.close();
+            });
+        },
+        function() {
+            alert("Please allow location access to join the queue.");
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
+</script>
 
 </body>
 </html>

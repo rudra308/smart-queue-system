@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1 class="page-title">Queue History</h1>
+<p class="page-subtitle">
+    View all queue records including waiting, served, and cancelled users.
+</p>
+
+<div class="card table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Service</th>
+                <th>Number</th>
+                <th>Status</th>
+                <th>Joined At</th>
+                <th>Served At</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for row in history_data %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td><strong>#{{ row[2] }}</strong></td>
+                <td>
+                    <span class="status-badge {{ row[3] }}">
+                        {{ row[3] | upper }}
+                    </span>
+                </td>
+                <td>{{ row[4] }}</td>
+                <td>{{ row[5] if row[5] else "-" }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align:center; color:#64748b;">
+                    No history records found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
