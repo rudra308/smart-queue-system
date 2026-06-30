@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Now Serving</title>
+    <meta http-equiv="refresh" content="3">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background: #000000;
+            color: #00ff00;
+            font-family: 'Arial Black', Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 40px;
+        }
+        h1 {
+            font-size: 70px;
+            letter-spacing: 5px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .box {
+            border: 4px solid #00ff00;
+            background: #0a0a0a;
+            border-radius: 15px;
+            width: 350px;
+            padding: 30px 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+        h2 {
+            font-size: 32px;
+            margin-top: 0;
+            border-bottom: 2px dashed #00ff00;
+            padding-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .number {
+            font-size: 100px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-shadow: 0 0 15px #00ff00;
+        }
+        .waiting {
+            font-size: 45px;
+            color: #444;
+            text-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>NOW SERVING</h1>
+
+    <div class="container">
+        {% for location, number in data %}
+        <div class="box">
+            <h2>{{ location }}</h2>
+            <div class="number">
+                {% if number == 0 %}
+                    <span class="waiting">STANDBY</span>
+                {% else %}
+                    {{ number }}
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

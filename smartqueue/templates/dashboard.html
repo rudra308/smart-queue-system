@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Queue - Dashboard</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: #333;
+            margin: 0; padding: 40px;
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .container {
+            background: white; padding: 40px; border-radius: 15px;
+            width: 100%; max-width: 800px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px;
+        }
+        .logout-btn { color: #e63946; text-decoration: none; font-weight: bold; }
+        .options-grid { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .option-card {
+            background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 10px;
+            padding: 25px; width: 210px; text-align: center;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .option-card:hover { transform: translateY(-5px); border-color: #667eea; }
+        .option-card h3 { margin-top: 0; margin-bottom: 20px; color: #2d3748; }
+        .queue-btn {
+            display: inline-block; background: #667eea; color: white;
+            padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;
+        }
+        .queue-btn:hover { background: #5a71e0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Welcome to Smart Queue</h1>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+
+    <h2>Where would you like to queue?</h2>
+
+    <div class="options-grid">
+        <div class="option-card">
+            <h3>Deans Cafe</h3>
+            <a href="/take_number/Deans%20Cafe" class="queue-btn">Join Queue</a>
+        </div>
+
+        <div class="option-card">
+            <h3>Haji Tapah</h3>
+            <a href="/take_number/Haji%20Tapah" class="queue-btn">Join Queue</a>
+        </div>
+
+        <div class="option-card">
+            <h3>Dapur Sahang</h3>
+            <a href="/take_number/Dapur%20Sahang" class="queue-btn">Join Queue</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

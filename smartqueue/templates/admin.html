@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Panel</title>
+</head>
+
+<body>
+
+<h1>Admin Panel</h1>
+
+<h2>Deans Cafe</h2>
+
+<ul>
+{% for q in queues["Deans Cafe"] %}
+<li>Queue {{ q[1] }} - {{ q[0] }}</li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<h2>Haji Tapah</h2>
+
+<ul>
+{% for q in queues["Haji Tapah"] %}
+<li>Queue {{ q[1] }} - {{ q[0] }}</li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<h2>Dapur Sahang</h2>
+
+<ul>
+{% for q in queues["Dapur Sahang"] %}
+<li>Queue {{ q[1] }} - {{ q[0] }}</li>
+{% endfor %}
+</ul>
+
+<br>
+
+<a href="/dashboard">
+    <button>Back</button>
+</a>
+
+</body>
+</html>
