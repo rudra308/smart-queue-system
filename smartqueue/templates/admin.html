@@ -3,6 +3,17 @@
 {% block content %}
 
 <h1 class="page-title">Admin Dashboard</h1>
+<div class="card" style="border-left:6px solid #2563eb;">
+    <h2>GPS Queue Restriction</h2>
+
+    {% if gps_enabled %}
+        <p><strong>Status:</strong> GPS is currently <span style="color:#16a34a;">ENABLED</span></p>
+        <a href="/toggle_gps" class="btn-danger">Disable GPS Restriction</a>
+    {% else %}
+        <p><strong>Status:</strong> GPS is currently <span style="color:#dc2626;">DISABLED</span></p>
+        <a href="/toggle_gps" class="btn-success">Enable GPS Restriction</a>
+    {% endif %}
+</div>
 <p class="page-subtitle">
     Manage queue numbers, monitor waiting users, and review system activity.
 </p>

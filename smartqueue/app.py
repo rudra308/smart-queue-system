@@ -8,15 +8,15 @@ from math import radians, sin, cos, sqrt, atan2
 app = Flask(__name__)
 app.secret_key = "smartqueue123"
 
-# Replace these with your real shop coordinates from Google Maps.
-# Current values are example coordinates for testing only.
+
 SHOPS = {
-    "Deans Cafe": {"lat": 2.9254134076227762, "lon": 101.642444852471},
+    "Deans Cafe": {"lat": 2.929768181691611, "lon": 101.70384124442663},
     "Haji Tapah": {"lat": 2.9270903402387716, "lon":  101.64189642861923},
-    "Dapur Sahang": {"lat": 2.925652819000214, "lon": 101.64549761342741,},
+    "Dapur Sahang": {"lat": 2.996500, "lon": 101.679000},
 }
 
-QUEUE_RADIUS_METERS = 200
+QUEUE_RADIUS_METERS = 10000
+GPS_ENABLED = True
 
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "queue.db"
@@ -282,7 +282,12 @@ def dashboard():
         return redirect("/admin")
 
     locations = ["Deans Cafe", "Haji Tapah", "Dapur Sahang"]
-    return render_template("dashboard.html", user=session["user"], locations=locations)
+    return render_template(
+    "dashboard.html",
+    user=session["user"],
+    locations=locations,
+    gps_enabled=GPS_ENABLED
+)
 
 
 @app.route("/services")
@@ -317,9 +322,9 @@ def take_number():
 
         remaining = max(0, round(distance - QUEUE_RADIUS_METERS))
 
-    return f"""
-    <!DOCTYPE html>
-    <html>
+        return f"""
+        <!DOCTYPE html>
+        <html>
 
     <head>
 
@@ -634,16 +639,17 @@ def admin():
     conn.close()
 
     return render_template(
-        "admin.html",
-        users=users,
-        current_numbers=current_numbers,
-        total_waiting=total_waiting,
-        total_served=total_served,
-        total_cancelled=total_cancelled,
-        canteen_waiting=canteen_waiting,
-        clinic_waiting=clinic_waiting,
-        office_waiting=office_waiting
-    )
+    "admin.html",
+    users=users,
+    current_numbers=current_numbers,
+    total_waiting=total_waiting,
+    total_served=total_served,
+    total_cancelled=total_cancelled,
+    canteen_waiting=canteen_waiting,
+    clinic_waiting=clinic_waiting,
+    office_waiting=office_waiting,
+    gps_enabled=GPS_ENABLED
+)
 
 
 @app.route("/call_next/<location>")
@@ -778,6 +784,17 @@ def history():
 
     return render_template("history.html", history_data=history_data)
 
+
+@app.route("/toggle_gps")
+def toggle_gps():
+    global GPS_ENABLED
+
+    if not session.get("admin"):
+        return "Access Denied"
+
+    GPS_ENABLED = not GPS_ENABLED
+
+    return redirect("/admin")
 
 @app.route("/logout")
 def logout():
